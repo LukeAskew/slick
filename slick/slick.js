@@ -76,6 +76,7 @@
                 slide: '',
                 slidesToShow: 1,
                 slidesToScroll: 1,
+                snapWhenSkipping: false,
                 speed: 500,
                 swipe: true,
                 swipeToSlide: false,
@@ -259,6 +260,8 @@
 
         var animProps = {}, _ = this;
 
+        var jumpToSlide = (Math.abs(_.currentSlide - _.previousSlide) > 1 && _.options.snapWhenSkipping);
+
         _.animateHeight();
 
         if (_.options.rtl === true && _.options.vertical === false) {
@@ -286,7 +289,7 @@
                 }).animate({
                     animStart: targetLeft
                 }, {
-                    duration: _.options.speed,
+                    duration: (jumpToSlide) ? 0 : _.options.speed,
                     easing: _.options.easing,
                     step: function(now) {
                         now = Math.ceil(now);
@@ -309,7 +312,10 @@
 
             } else {
 
-                _.applyTransition();
+                if (!jumpToSlide) {
+                    _.applyTransition();
+                }
+
                 targetLeft = Math.ceil(targetLeft);
 
                 if (_.options.vertical === false) {
@@ -1285,7 +1291,7 @@
             targetImage.attr('src', targetImage.attr('data-lazy')).removeClass('slick-loading').load(function() {
                 targetImage.removeAttr('data-lazy');
                 _.progressiveLazyLoad();
-                
+
                 if( _.options.adaptiveHeight === true ) {
                     _.setPosition();
                 }
@@ -1799,6 +1805,7 @@
 
         oldSlide = _.currentSlide;
         _.currentSlide = animSlide;
+        _.previousSlide = oldSlide;
 
         _.setSlideClasses(_.currentSlide);
 
