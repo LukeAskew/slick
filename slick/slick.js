@@ -76,6 +76,7 @@
                 slide: '',
                 slidesToShow: 1,
                 slidesToScroll: 1,
+                snapWhenSkipping: false,
                 speed: 500,
                 swipe: true,
                 swipeToSlide: false,
@@ -309,7 +310,10 @@
 
             } else {
 
-                _.applyTransition();
+                if ( Math.abs(_.currentSlide - _.previousSlide) === 1 || !_.options.snapWhenSkipping) {
+                    _.applyTransition();
+                }
+
                 targetLeft = Math.ceil(targetLeft);
 
                 if (_.options.vertical === false) {
@@ -1799,6 +1803,7 @@
 
         oldSlide = _.currentSlide;
         _.currentSlide = animSlide;
+        _.previousSlide = oldSlide;
 
         _.setSlideClasses(_.currentSlide);
 
